@@ -1,10 +1,39 @@
 # Visual Context Router
 
-Token-aware visual context routing for Codex and AI agents.
+**Stop sending full screenshots to agents.**
 
-Visual Context Router turns screenshots into compact, structured observations so an agent does not need to send a full image every time it wants to understand a UI. It combines screenshot diffing, region-of-interest crops, lightweight UI element detection, optional OCR, and wireframe-style prompts.
+Visual Context Router is a token throttle for screen-reading AI agents. It lets Codex and other agents inspect screens through structured wireframes, change detection, and ROI crops before falling back to full screenshots.
 
 The goal is simple: **send pixels only when pixels are the best evidence**.
+
+## Demo
+
+On the included sample UI screen:
+
+| Input path | Full image tokens | Routed text tokens | Saved | Savings |
+| --- | ---: | ---: | ---: | ---: |
+| `examples/sample-screen-after.png` | 768 | 65 | 703 | 91.5% |
+
+```bash
+vcr route examples/sample-screen-after.png --previous examples/sample-screen.png --json
+```
+
+```json
+{
+  "strategy": "wireframe_plus_roi",
+  "include_full_image": false,
+  "include_wireframe": true,
+  "token_estimate": {
+    "full_image_tokens": 768,
+    "routed_text_tokens": 65,
+    "saved_tokens": 703,
+    "savings_ratio": 0.915
+  }
+}
+```
+
+![Sample screen before](examples/sample-screen.png)
+![Sample screen after](examples/sample-screen-after.png)
 
 ## Reality Check
 
@@ -83,6 +112,13 @@ Use Visual Context Router to inspect my screen with vcr_capture_route.
 
 See [docs/codex-install.md](docs/codex-install.md) for manual installation and troubleshooting.
 See [docs/prompts.md](docs/prompts.md) for copy-paste Codex prompts.
+See [docs/benchmarks.md](docs/benchmarks.md) for reproducible token-saving examples.
+
+Reproduce the included benchmark:
+
+```bash
+python scripts/benchmark_examples.py
+```
 
 Check the local install:
 
@@ -212,9 +248,9 @@ Important: the plugin gives Codex callable tools, but it does not globally inter
 - Accessibility tree adapters for browser and desktop automation.
 - DOM change ingestion for browser agents.
 - Better icon and control classification.
-- Token savings benchmark suite.
+- Broader token savings benchmark suite.
 - Model-facing observation cache.
-- MCP server wrapper for direct tool calls.
+- Automatic ROI crop bundles for model follow-up.
 
 ## Development
 

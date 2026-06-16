@@ -9,6 +9,12 @@ Use these prompts in a new Codex thread after installing the plugin.
 Use vcr_capture_route first. Tell me only the strategy, savings_ratio, and what you can infer.
 ```
 
+## Shortest Useful Prompt
+
+```text
+[@visual-context-router](plugin://visual-context-router@personal) Low-token screen check.
+```
+
 ## Repeated Screen Work
 
 ```text
@@ -29,4 +35,3 @@ If the strategy is wireframe_plus_roi, reason from the wireframe first and crop 
 [@visual-context-router](plugin://visual-context-router@personal) Call vcr_capture_route and report:
 strategy, full_image_tokens, routed_text_tokens, saved_tokens, savings_ratio.
 ```
-

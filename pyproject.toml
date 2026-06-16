@@ -12,6 +12,7 @@ license = "MIT"
 authors = [
   { name = "Visual Context Router contributors" }
 ]
+urls = { Repository = "https://github.com/fangsylar-pixel/visual-context-router" }
 keywords = [
   "codex",
   "ai-agent",
