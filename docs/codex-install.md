@@ -36,9 +36,10 @@ If the one-command installer cannot run the Codex CLI command, run this manually
 codex plugin add visual-context-router@personal
 ```
 
+On some Windows Codex Desktop installs, the `codex` executable may be present under `WindowsApps` but blocked from direct shell execution. In that case the installer still writes the local marketplace entry. Open Codex, refresh/reopen the plugin UI, and install `visual-context-router` from the Personal marketplace.
+
 Then start a new Codex thread so the plugin tools are loaded.
 
 ## Important Limitation
 
 This plugin gives Codex callable routing tools. It does not globally intercept every built-in screenshot path. To use the low-token path, ask Codex to call `vcr_capture_route` before requesting or analyzing a full screenshot.
-

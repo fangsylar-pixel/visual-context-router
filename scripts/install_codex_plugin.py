@@ -136,6 +136,11 @@ def try_codex_add() -> None:
     except FileNotFoundError:
         print("Codex CLI was not found; install from the Codex app or run manually:")
         print(f"  {' '.join(command)}")
+    except PermissionError:
+        print("Codex CLI exists but Windows denied execution.")
+        print("The marketplace entry was still written successfully.")
+        print("Open the Codex app plugin UI, refresh local plugins, or run manually from a shell with Codex CLI access:")
+        print(f"  {' '.join(command)}")
     except subprocess.CalledProcessError:
         print("Codex CLI install command failed. Run manually after opening Codex:")
         print(f"  {' '.join(command)}")
@@ -148,4 +153,3 @@ def run_checked(command: list[str]) -> None:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
