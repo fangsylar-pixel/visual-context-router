@@ -10,10 +10,18 @@ Use this skill when a task involves image or screen understanding and the user c
 ## Workflow
 
 1. Prefer structured state over full screenshots.
-2. Run `vcr route <image> --previous <previous>` to decide whether to skip, use wireframe text, crop ROIs, or send the full screenshot.
-3. Run `vcr observe <image>` to create a compact wireframe prompt when detailed state is needed.
-4. Use `vcr crop <image> --bbox x1,y1,x2,y2 --out roi.png` when the next model step only needs a local region.
-5. Include the wireframe text and only the needed ROI image in the model context.
+2. If MCP tools are available and the user asks to inspect the current screen, call `vcr_capture_route` first.
+3. Run `vcr route <image> --previous <previous>` to decide whether to skip, use wireframe text, crop ROIs, or send the full screenshot.
+4. Run `vcr observe <image>` to create a compact wireframe prompt when detailed state is needed.
+5. Use `vcr crop <image> --bbox x1,y1,x2,y2 --out roi.png` when the next model step only needs a local region.
+6. Include the wireframe text and only the needed ROI image in the model context.
+
+## MCP Tools
+
+- `vcr_capture_route`: capture the current screen and return a route decision.
+- `vcr_route`: route an existing screenshot.
+- `vcr_observe`: produce a compact observation.
+- `vcr_crop`: crop a region of interest.
 
 ## Commands
 

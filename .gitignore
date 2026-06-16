@@ -10,4 +10,4 @@ build/
 *.log
 roi.png
 *.tmp.png
-
+.vcr/

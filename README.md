@@ -138,7 +138,20 @@ elif decision.include_wireframe:
 ## Codex Plugin Usage
 
 This repository includes `.codex-plugin/plugin.json` and a Codex skill under `skills/`.
-After installing or sharing the plugin, ask Codex to use Visual Context Router when inspecting screenshots, browser captures, or UI automation state.
+It also includes an MCP server that exposes tools Codex can call directly after the plugin is installed:
+
+- `vcr_capture_route`: capture the current screen and return a low-token routing decision.
+- `vcr_route`: route an existing screenshot.
+- `vcr_observe`: return a compact wireframe observation.
+- `vcr_crop`: crop a normalized region of interest.
+
+Example prompt:
+
+```text
+Use Visual Context Router to inspect my current screen with vcr_capture_route before deciding whether you need a full screenshot.
+```
+
+Important: the plugin gives Codex callable tools, but it does not globally intercept every built-in screenshot path. Ask Codex to use `vcr_capture_route` when you want the low-token route.
 
 ## Roadmap
 

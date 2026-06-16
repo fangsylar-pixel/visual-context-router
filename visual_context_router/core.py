@@ -26,8 +26,9 @@ class UIElement:
     def to_line(self) -> str:
         x1, y1, x2, y2 = self.bbox
         label = f' "{self.text}"' if self.text else ""
+        type_label = self.type.replace("_or_", "/").replace("_", " ").title().replace(" ", "")
         return (
-            f"{self.type.title()}[{self.id}]{label} "
+            f"{type_label}[{self.id}]{label} "
             f"bbox=({x1:.3f},{y1:.3f},{x2:.3f},{y2:.3f}) "
             f"conf={self.confidence:.2f}"
         )
@@ -371,7 +372,7 @@ def route_observation(
         return RouteDecision(
             strategy="full_image",
             reason="Large visual change detected; send a full screenshot for global reorientation.",
-            model_payload=observation.to_wireframe(max_elements=40),
+            model_payload=observation.to_wireframe(max_elements=20),
             include_full_image=True,
             include_wireframe=True,
             roi_bboxes=[],
@@ -384,7 +385,7 @@ def route_observation(
         return RouteDecision(
             strategy="wireframe_plus_roi",
             reason="Localized visual change detected; send compact wireframe and suggested ROI crops.",
-            model_payload=observation.to_wireframe(max_elements=40),
+            model_payload=observation.to_wireframe(max_elements=20),
             include_full_image=False,
             include_wireframe=True,
             roi_bboxes=observation.roi_suggestions[:3],

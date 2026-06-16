@@ -6,6 +6,7 @@
     "name": "Visual Context Router contributors"
   },
   "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Visual Context Router",
     "shortDescription": "Compress screenshots into structured visual state.",
@@ -16,7 +17,8 @@
       "screenshot-diff",
       "roi-cropping",
       "wireframe-prompts",
-      "agent-observation"
+      "agent-observation",
+      "mcp-tools"
     ],
     "defaultPrompt": "Use Visual Context Router to inspect screenshots with low token overhead."
   }
