@@ -291,6 +291,12 @@ The open-source project is useful as a developer tool. Commercial value is likel
 - Agent framework integrations.
 - Browser and desktop automation SDKs.
 
+## Support
+
+Visual Context Router is open source. If it helps your Codex or AI agent workflow, optional support is welcome:
+
+[爱发电支持 / Support on Afdian](https://afdian.net/a/fangsylar)
+
 ## License
 
 MIT
