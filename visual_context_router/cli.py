@@ -4,7 +4,9 @@ import argparse
 import json
 from pathlib import Path
 
-from .core import crop_roi, observe
+from dataclasses import asdict
+
+from .core import crop_roi, observe, route_observation
 
 
 def main() -> int:
@@ -22,7 +24,16 @@ def main() -> int:
     observe_parser.add_argument("--ocr", action="store_true", help="Use pytesseract OCR if available.")
     observe_parser.add_argument("--json", action="store_true", help="Print JSON instead of wireframe text.")
     observe_parser.add_argument("--token-budget", action="store_true", help="Include token estimate.")
+    observe_parser.add_argument("--route", action="store_true", help="Include routing decision.")
     observe_parser.set_defaults(func=_observe_command)
+
+    route_parser = subparsers.add_parser("route", help="Decide what visual context an agent should send.")
+    route_parser.add_argument("image", help="Current screenshot path.")
+    route_parser.add_argument("--previous", help="Previous screenshot path.")
+    route_parser.add_argument("--threshold", type=float, default=0.003, help="Change threshold.")
+    route_parser.add_argument("--ocr", action="store_true", help="Use pytesseract OCR if available.")
+    route_parser.add_argument("--json", action="store_true", help="Print JSON route decision.")
+    route_parser.set_defaults(func=_route_command)
 
     crop_parser = subparsers.add_parser("crop", help="Crop a normalized region of interest.")
     crop_parser.add_argument("image", help="Screenshot path.")
@@ -44,7 +55,15 @@ def _observe_command(args: argparse.Namespace) -> int:
         ocr=args.ocr,
     )
     if args.json:
-        print(json.dumps(observation.to_dict(include_token_estimate=args.token_budget), indent=2))
+        print(
+            json.dumps(
+                observation.to_dict(
+                    include_token_estimate=args.token_budget,
+                    include_route=args.route,
+                ),
+                indent=2,
+            )
+        )
     else:
         print(observation.to_wireframe())
         if args.token_budget:
@@ -59,6 +78,33 @@ def _observe_command(args: argparse.Namespace) -> int:
                 f"saved={estimate['saved_tokens']} "
                 f"savings={estimate['savings_ratio']:.1%}"
             )
+    return 0
+
+
+def _route_command(args: argparse.Namespace) -> int:
+    observation = observe(
+        image_path=args.image,
+        previous_path=args.previous,
+        change_threshold=args.threshold,
+        ocr=args.ocr,
+    )
+    decision = route_observation(observation)
+    if args.json:
+        print(json.dumps(asdict(decision), indent=2))
+    else:
+        print(f"Strategy: {decision.strategy}")
+        print(f"Reason: {decision.reason}")
+        print(
+            "Token estimate: "
+            f"full_image={decision.token_estimate.full_image_tokens} "
+            f"routed_text={decision.token_estimate.routed_text_tokens} "
+            f"saved={decision.token_estimate.saved_tokens} "
+            f"savings={decision.token_estimate.savings_ratio:.1%}"
+        )
+        if decision.roi_bboxes:
+            print("ROI bboxes:")
+            for bbox in decision.roi_bboxes:
+                print("- " + ",".join(f"{value:.4f}" for value in bbox))
     return 0
 
 

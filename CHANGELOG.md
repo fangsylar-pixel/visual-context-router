@@ -4,8 +4,8 @@
 
 - Initial screenshot observation API.
 - Screenshot diffing and change detection.
+- Agent routing decision API and `vcr route` command.
 - Wireframe prompt generation.
 - Region-of-interest crop command.
 - Optional OCR and OpenCV integration points.
 - Codex plugin metadata and skill instructions.
-

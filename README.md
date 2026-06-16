@@ -34,6 +34,7 @@ screen / frame
 - Heuristic UI element detection with optional OpenCV enhancement.
 - Optional OCR with `pytesseract`.
 - JSON observations for easy agent integration.
+- Routing decisions: `skip`, `wireframe_only`, `wireframe_plus_roi`, or `full_image`.
 - Codex plugin metadata and skill instructions.
 
 ## Install
@@ -74,6 +75,12 @@ Estimate visual token savings:
 vcr observe examples/sample-screen.png --json --token-budget
 ```
 
+Ask the router what an agent should send next:
+
+```bash
+vcr route examples/sample-screen-after.png --previous examples/sample-screen.png --json
+```
+
 ## Example Output
 
 ```json
@@ -97,23 +104,35 @@ vcr observe examples/sample-screen.png --json --token-budget
 }
 ```
 
+## Routing Strategies
+
+Visual Context Router can make an explicit routing decision for the next model call:
+
+| Strategy | Meaning |
+| --- | --- |
+| `skip` | No meaningful visual change. Continue from action log or cached state. |
+| `wireframe_only` | Send structured text state only. |
+| `wireframe_plus_roi` | Send structured text plus a few local crops. |
+| `full_image` | Send the full screenshot because the agent needs global reorientation. |
+
 ## Agent Pattern
 
 Use the package as a router in front of a multimodal model:
 
 ```python
-from visual_context_router import observe
+from visual_context_router import observe, route_observation
 
 observation = observe(
     image_path="current.png",
     previous_path="previous.png",
-    change_threshold=0.01,
+    change_threshold=0.003,
 )
+decision = route_observation(observation)
 
-if not observation.changed:
+if decision.strategy == "skip":
     prompt = "No semantic visual change. Continue from action log."
-else:
-    prompt = observation.to_wireframe()
+elif decision.include_wireframe:
+    prompt = decision.model_payload
 ```
 
 ## Codex Plugin Usage

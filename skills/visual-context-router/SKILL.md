@@ -10,8 +10,8 @@ Use this skill when a task involves image or screen understanding and the user c
 ## Workflow
 
 1. Prefer structured state over full screenshots.
-2. Run `vcr observe <image>` to create a compact wireframe prompt.
-3. When a previous screenshot exists, run `vcr observe <image> --previous <previous>` and skip image analysis if `changed` is false.
+2. Run `vcr route <image> --previous <previous>` to decide whether to skip, use wireframe text, crop ROIs, or send the full screenshot.
+3. Run `vcr observe <image>` to create a compact wireframe prompt when detailed state is needed.
 4. Use `vcr crop <image> --bbox x1,y1,x2,y2 --out roi.png` when the next model step only needs a local region.
 5. Include the wireframe text and only the needed ROI image in the model context.
 
@@ -19,6 +19,7 @@ Use this skill when a task involves image or screen understanding and the user c
 
 ```bash
 vcr observe current.png --previous previous.png --json --token-budget
+vcr route current.png --previous previous.png --json
 vcr crop current.png --bbox 0.70,0.05,0.98,0.30 --out roi.png
 ```
 
@@ -28,4 +29,3 @@ vcr crop current.png --bbox 0.70,0.05,0.98,0.30 --out roi.png
 - Use wireframe output for repeated state tracking.
 - Use ROI crops for confirmation, small text, dialogs, menus, and ambiguous icons.
 - Request a fresh screenshot when the action log and visual state disagree.
-

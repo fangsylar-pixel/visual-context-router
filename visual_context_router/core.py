@@ -42,6 +42,17 @@ class TokenEstimate:
 
 
 @dataclass(frozen=True)
+class RouteDecision:
+    strategy: str
+    reason: str
+    model_payload: str
+    include_full_image: bool
+    include_wireframe: bool
+    roi_bboxes: list[tuple[float, float, float, float]]
+    token_estimate: TokenEstimate
+
+
+@dataclass(frozen=True)
 class Observation:
     image: ImageInfo
     changed: bool
@@ -50,12 +61,19 @@ class Observation:
     ocr_text: list[str] = field(default_factory=list)
     roi_suggestions: list[tuple[float, float, float, float]] = field(default_factory=list)
 
-    def to_dict(self, include_wireframe: bool = True, include_token_estimate: bool = False) -> dict:
+    def to_dict(
+        self,
+        include_wireframe: bool = True,
+        include_token_estimate: bool = False,
+        include_route: bool = False,
+    ) -> dict:
         data = asdict(self)
         if include_wireframe:
             data["wireframe"] = self.to_wireframe()
         if include_token_estimate:
             data["token_estimate"] = asdict(estimate_tokens(self))
+        if include_route:
+            data["route"] = asdict(route_observation(self))
         return data
 
     def to_wireframe(self, max_elements: int = 80) -> str:
@@ -237,16 +255,32 @@ def _boxes_to_elements(
 ) -> list[UIElement]:
     elements = []
     for idx, (x1, y1, x2, y2, confidence) in enumerate(boxes[:max_regions], start=1):
+        element_type = _classify_box(x1, y1, x2, y2, width, height)
         elements.append(
             UIElement(
                 id=idx,
-                type="region",
+                type=element_type,
                 text="",
                 bbox=(x1 / width, y1 / height, x2 / width, y2 / height),
                 confidence=float(confidence),
             )
         )
     return elements
+
+
+def _classify_box(x1: int, y1: int, x2: int, y2: int, width: int, height: int) -> str:
+    box_width = max(1, x2 - x1)
+    box_height = max(1, y2 - y1)
+    aspect = box_width / box_height
+    area_ratio = (box_width * box_height) / max(1, width * height)
+
+    if 2.0 <= aspect <= 12.0 and 0.001 <= area_ratio <= 0.035 and box_height <= height * 0.12:
+        return "button_or_input"
+    if area_ratio >= 0.08:
+        return "panel"
+    if aspect >= 6.0 and box_height <= height * 0.10:
+        return "toolbar_or_textline"
+    return "region"
 
 
 def read_ocr_text(image: Image.Image) -> list[str]:
@@ -312,4 +346,57 @@ def estimate_tokens(observation: Observation) -> TokenEstimate:
         routed_text_tokens=routed_text_tokens,
         saved_tokens=saved,
         savings_ratio=ratio,
+    )
+
+
+def route_observation(
+    observation: Observation,
+    full_image_threshold: float = 0.08,
+    roi_threshold: float = 0.003,
+) -> RouteDecision:
+    token_estimate = estimate_tokens(observation)
+
+    if observation.change_score is not None and not observation.changed:
+        return RouteDecision(
+            strategy="skip",
+            reason="Screen change is below threshold; continue from action log or cached state.",
+            model_payload="No meaningful visual change detected. Continue from the previous state.",
+            include_full_image=False,
+            include_wireframe=False,
+            roi_bboxes=[],
+            token_estimate=token_estimate,
+        )
+
+    if observation.change_score is not None and observation.change_score >= full_image_threshold:
+        return RouteDecision(
+            strategy="full_image",
+            reason="Large visual change detected; send a full screenshot for global reorientation.",
+            model_payload=observation.to_wireframe(max_elements=40),
+            include_full_image=True,
+            include_wireframe=True,
+            roi_bboxes=[],
+            token_estimate=token_estimate,
+        )
+
+    if observation.roi_suggestions and (
+        observation.change_score is None or observation.change_score >= roi_threshold
+    ):
+        return RouteDecision(
+            strategy="wireframe_plus_roi",
+            reason="Localized visual change detected; send compact wireframe and suggested ROI crops.",
+            model_payload=observation.to_wireframe(max_elements=40),
+            include_full_image=False,
+            include_wireframe=True,
+            roi_bboxes=observation.roi_suggestions[:3],
+            token_estimate=token_estimate,
+        )
+
+    return RouteDecision(
+        strategy="wireframe_only",
+        reason="Use structured visual state without image pixels.",
+        model_payload=observation.to_wireframe(max_elements=60),
+        include_full_image=False,
+        include_wireframe=True,
+        roi_bboxes=[],
+        token_estimate=token_estimate,
     )
