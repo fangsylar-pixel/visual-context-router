@@ -19,6 +19,7 @@ Use this skill when a task involves image or screen understanding and the user c
 ## MCP Tools
 
 - `vcr_capture_route`: capture the current screen and return a route decision.
+- `vcr_watch`: capture the current screen, compare against the previous saved capture, update state, and return a route decision.
 - `vcr_route`: route an existing screenshot.
 - `vcr_observe`: produce a compact observation.
 - `vcr_crop`: crop a region of interest.
@@ -28,6 +29,7 @@ Use this skill when a task involves image or screen understanding and the user c
 ```bash
 vcr observe current.png --previous previous.png --json --token-budget
 vcr route current.png --previous previous.png --json
+vcr watch --json
 vcr crop current.png --bbox 0.70,0.05,0.98,0.30 --out roi.png
 ```
 

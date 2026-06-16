@@ -14,6 +14,7 @@ Visual Context Router is a callable routing tool, not a global Codex screenshot 
 - It cannot force Codex to use those tools for every built-in screenshot request.
 - After installing the plugin, start a new Codex thread so the MCP tools are loaded.
 - If the tools are not visible, run `python scripts/doctor.py` to check the local install.
+- For repeated UI work, use `vcr_watch` so each observation is compared with the previous screen.
 
 ## Why This Exists
 
@@ -81,6 +82,7 @@ Use Visual Context Router to inspect my screen with vcr_capture_route.
 ```
 
 See [docs/codex-install.md](docs/codex-install.md) for manual installation and troubleshooting.
+See [docs/prompts.md](docs/prompts.md) for copy-paste Codex prompts.
 
 Check the local install:
 
@@ -118,6 +120,12 @@ Ask the router what an agent should send next:
 
 ```bash
 vcr route examples/sample-screen-after.png --previous examples/sample-screen.png --json
+```
+
+Watch the current screen with saved previous-frame state:
+
+```bash
+vcr watch --json
 ```
 
 ## Example Output
@@ -180,6 +188,7 @@ This repository includes `.codex-plugin/plugin.json` and a Codex skill under `sk
 It also includes an MCP server that exposes tools Codex can call directly after the plugin is installed:
 
 - `vcr_capture_route`: capture the current screen and return a low-token routing decision.
+- `vcr_watch`: capture the current screen, compare it with the previous saved capture, and return a low-token routing decision.
 - `vcr_route`: route an existing screenshot.
 - `vcr_observe`: return a compact wireframe observation.
 - `vcr_crop`: crop a normalized region of interest.
@@ -188,6 +197,12 @@ Example prompt:
 
 ```text
 Use Visual Context Router to inspect my current screen with vcr_capture_route before deciding whether you need a full screenshot.
+```
+
+For repeated UI tasks:
+
+```text
+Use Visual Context Router with vcr_watch before each screen observation. Only ask for a full screenshot if the route strategy is full_image or ambiguous.
 ```
 
 Important: the plugin gives Codex callable tools, but it does not globally intercept every built-in screenshot path. Ask Codex to use `vcr_capture_route` when you want the low-token route. If the current thread cannot see the tool, start a new Codex thread after installation.

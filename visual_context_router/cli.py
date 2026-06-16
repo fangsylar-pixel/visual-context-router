@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from dataclasses import asdict
+from PIL import ImageGrab
 
 from .core import crop_roi, observe, route_observation
 
@@ -34,6 +35,16 @@ def main() -> int:
     route_parser.add_argument("--ocr", action="store_true", help="Use pytesseract OCR if available.")
     route_parser.add_argument("--json", action="store_true", help="Print JSON route decision.")
     route_parser.set_defaults(func=_route_command)
+
+    watch_parser = subparsers.add_parser(
+        "watch",
+        help="Capture the current screen, compare with the previous capture, and route it.",
+    )
+    watch_parser.add_argument("--state-dir", default=".vcr", help="Directory for saved screen state.")
+    watch_parser.add_argument("--threshold", type=float, default=0.003, help="Change threshold.")
+    watch_parser.add_argument("--ocr", action="store_true", help="Use pytesseract OCR if available.")
+    watch_parser.add_argument("--json", action="store_true", help="Print JSON route decision.")
+    watch_parser.set_defaults(func=_watch_command)
 
     crop_parser = subparsers.add_parser("crop", help="Crop a normalized region of interest.")
     crop_parser.add_argument("image", help="Screenshot path.")
@@ -105,6 +116,44 @@ def _route_command(args: argparse.Namespace) -> int:
             print("ROI bboxes:")
             for bbox in decision.roi_bboxes:
                 print("- " + ",".join(f"{value:.4f}" for value in bbox))
+    return 0
+
+
+def _watch_command(args: argparse.Namespace) -> int:
+    state_dir = Path(args.state_dir)
+    state_dir.mkdir(parents=True, exist_ok=True)
+    previous = state_dir / "previous-screen.png"
+    current = state_dir / "current-screen.png"
+
+    image = ImageGrab.grab()
+    image.save(current)
+
+    observation = observe(
+        image_path=current,
+        previous_path=previous if previous.exists() else None,
+        change_threshold=args.threshold,
+        ocr=args.ocr,
+    )
+    decision = route_observation(observation)
+    current.replace(previous)
+
+    payload = asdict(decision)
+    payload["captured_path"] = str(previous)
+    payload["used_previous"] = observation.change_score is not None
+
+    if args.json:
+        print(json.dumps(payload, indent=2))
+    else:
+        print(f"Strategy: {decision.strategy}")
+        print(f"Reason: {decision.reason}")
+        print(f"Used previous: {payload['used_previous']}")
+        print(
+            "Token estimate: "
+            f"full_image={decision.token_estimate.full_image_tokens} "
+            f"routed_text={decision.token_estimate.routed_text_tokens} "
+            f"saved={decision.token_estimate.saved_tokens} "
+            f"savings={decision.token_estimate.savings_ratio:.1%}"
+        )
     return 0
 
 

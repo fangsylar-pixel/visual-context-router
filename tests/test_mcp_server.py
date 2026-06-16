@@ -21,7 +21,7 @@ def test_mcp_server_lists_tools() -> None:
     payload = _decode_content_length_message(result.stdout)
     tools = {tool["name"] for tool in payload["result"]["tools"]}
 
-    assert {"vcr_route", "vcr_observe", "vcr_crop", "vcr_capture_route"} <= tools
+    assert {"vcr_route", "vcr_observe", "vcr_crop", "vcr_capture_route", "vcr_watch"} <= tools
 
 
 def _decode_content_length_message(output: str) -> dict:

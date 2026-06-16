@@ -58,7 +58,7 @@ def check_mcp_tools() -> tuple[bool, str, str]:
     except Exception as exc:
         return False, "MCP tools/list", str(exc)
 
-    expected = {"vcr_capture_route", "vcr_route", "vcr_observe", "vcr_crop"}
+    expected = {"vcr_capture_route", "vcr_watch", "vcr_route", "vcr_observe", "vcr_crop"}
     missing = expected - tools
     if missing:
         return False, "MCP tools/list", f"missing tools: {', '.join(sorted(missing))}"
@@ -103,4 +103,3 @@ def decode_content_length_message(output: str) -> dict:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

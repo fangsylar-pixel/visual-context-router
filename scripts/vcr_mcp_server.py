@@ -83,6 +83,21 @@ TOOLS = [
             },
         },
     },
+    {
+        "name": "vcr_watch",
+        "description": "Capture the current screen, compare it with the previous saved capture, update state, and return a low-token route decision.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "state_dir": {
+                    "type": "string",
+                    "description": "Directory used to store previous/current screenshots.",
+                },
+                "threshold": {"type": "number", "default": 0.003},
+                "ocr": {"type": "boolean", "default": False},
+            },
+        },
+    },
 ]
 
 
@@ -172,6 +187,25 @@ def _call_tool(tool_name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         )
         payload = asdict(route_observation(observation))
         payload["captured_path"] = str(out_path)
+        return _tool_text(payload)
+
+    if tool_name == "vcr_watch":
+        state_dir = Path(arguments.get("state_dir") or ROOT / ".vcr")
+        state_dir.mkdir(parents=True, exist_ok=True)
+        previous = state_dir / "previous-screen.png"
+        current = state_dir / "current-screen.png"
+        image = ImageGrab.grab()
+        image.save(current)
+        observation = observe(
+            image_path=current,
+            previous_path=previous if previous.exists() else None,
+            change_threshold=float(arguments.get("threshold", 0.003)),
+            ocr=bool(arguments.get("ocr", False)),
+        )
+        payload = asdict(route_observation(observation))
+        current.replace(previous)
+        payload["captured_path"] = str(previous)
+        payload["used_previous"] = observation.change_score is not None
         return _tool_text(payload)
 
     raise ValueError(f"Unknown tool: {tool_name}")

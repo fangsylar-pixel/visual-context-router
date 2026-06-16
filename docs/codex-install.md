@@ -3,6 +3,7 @@
 Visual Context Router includes a Codex plugin manifest and an MCP server. After installation, Codex can call:
 
 - `vcr_capture_route`
+- `vcr_watch`
 - `vcr_route`
 - `vcr_observe`
 - `vcr_crop`
@@ -26,6 +27,12 @@ After it finishes, start a new Codex thread and ask:
 
 ```text
 Use Visual Context Router to inspect my screen with vcr_capture_route.
+```
+
+For repeated screen work:
+
+```text
+Use Visual Context Router with vcr_watch before each screen observation.
 ```
 
 ## Manual Install

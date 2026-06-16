@@ -8,6 +8,8 @@
 - MCP tools for direct Codex integration, including `vcr_capture_route`.
 - One-command local Codex plugin installer.
 - Install doctor for checking local Codex/MCP setup.
+- Stateful `vcr_watch` / `vcr watch` for repeated screen observations.
+- Copy-paste prompt recipes for Codex users.
 - Wireframe prompt generation.
 - Region-of-interest crop command.
 - Optional OCR and OpenCV integration points.

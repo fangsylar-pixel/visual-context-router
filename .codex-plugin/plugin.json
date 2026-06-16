@@ -18,7 +18,8 @@
       "roi-cropping",
       "wireframe-prompts",
       "agent-observation",
-      "mcp-tools"
+      "mcp-tools",
+      "stateful-watch"
     ],
     "defaultPrompt": "Use Visual Context Router to inspect screenshots with low token overhead."
   }
