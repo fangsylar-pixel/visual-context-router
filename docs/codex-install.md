@@ -40,6 +40,23 @@ On some Windows Codex Desktop installs, the `codex` executable may be present un
 
 Then start a new Codex thread so the plugin tools are loaded.
 
+## Verify Install
+
+Run:
+
+```bash
+python scripts/doctor.py
+```
+
+Expected checks:
+
+- Python package import: ok
+- MCP tools/list: ok
+- Personal marketplace: ok
+- Local plugin copy: ok
+
+If these pass but Codex still cannot call `vcr_capture_route`, start a new thread. Tool availability is determined when a thread starts.
+
 ## Important Limitation
 
 This plugin gives Codex callable routing tools. It does not globally intercept every built-in screenshot path. To use the low-token path, ask Codex to call `vcr_capture_route` before requesting or analyzing a full screenshot.

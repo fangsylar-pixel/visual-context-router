@@ -6,6 +6,15 @@ Visual Context Router turns screenshots into compact, structured observations so
 
 The goal is simple: **send pixels only when pixels are the best evidence**.
 
+## Reality Check
+
+Visual Context Router is a callable routing tool, not a global Codex screenshot interceptor.
+
+- It can reduce token use when Codex calls `vcr_capture_route`, `vcr_route`, or `vcr_observe`.
+- It cannot force Codex to use those tools for every built-in screenshot request.
+- After installing the plugin, start a new Codex thread so the MCP tools are loaded.
+- If the tools are not visible, run `python scripts/doctor.py` to check the local install.
+
 ## Why This Exists
 
 Vision-capable agents often waste tokens on:
@@ -72,6 +81,12 @@ Use Visual Context Router to inspect my screen with vcr_capture_route.
 ```
 
 See [docs/codex-install.md](docs/codex-install.md) for manual installation and troubleshooting.
+
+Check the local install:
+
+```bash
+python scripts/doctor.py
+```
 
 ## Quick Start
 
@@ -175,7 +190,7 @@ Example prompt:
 Use Visual Context Router to inspect my current screen with vcr_capture_route before deciding whether you need a full screenshot.
 ```
 
-Important: the plugin gives Codex callable tools, but it does not globally intercept every built-in screenshot path. Ask Codex to use `vcr_capture_route` when you want the low-token route.
+Important: the plugin gives Codex callable tools, but it does not globally intercept every built-in screenshot path. Ask Codex to use `vcr_capture_route` when you want the low-token route. If the current thread cannot see the tool, start a new Codex thread after installation.
 
 ## Roadmap
 

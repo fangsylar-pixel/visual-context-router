@@ -37,3 +37,4 @@ vcr crop current.png --bbox 0.70,0.05,0.98,0.30 --out roi.png
 - Use wireframe output for repeated state tracking.
 - Use ROI crops for confirmation, small text, dialogs, menus, and ambiguous icons.
 - Request a fresh screenshot when the action log and visual state disagree.
+- If MCP tools are not available in the current thread, say that the plugin needs a new thread after installation instead of implying token savings happened.
