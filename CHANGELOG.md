@@ -11,6 +11,7 @@
 - Stateful `vcr_watch` / `vcr watch` for repeated screen observations.
 - Copy-paste prompt recipes for Codex users.
 - README demo, benchmark documentation, and clearer project positioning.
+- Animated README flow diagram.
 - Wireframe prompt generation.
 - Region-of-interest crop command.
 - Optional OCR and OpenCV integration points.

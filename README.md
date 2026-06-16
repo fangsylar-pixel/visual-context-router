@@ -6,6 +6,8 @@ Visual Context Router is a token throttle for screen-reading AI agents. It lets 
 
 The goal is simple: **send pixels only when pixels are the best evidence**.
 
+![Visual Context Router flow](assets/visual-context-router-flow.gif)
+
 ## Demo
 
 On the included sample UI screen:
@@ -263,6 +265,12 @@ Generate demo screenshots:
 
 ```bash
 python scripts/make_demo_images.py
+```
+
+Generate README assets:
+
+```bash
+python scripts/make_readme_assets.py
 ```
 
 ## GitHub Release Checklist
