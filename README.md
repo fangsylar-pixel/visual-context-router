@@ -39,6 +39,8 @@ screen / frame
 
 ## Install
 
+For local CLI/SDK use:
+
 ```bash
 pip install -e .
 ```
@@ -48,6 +50,28 @@ Optional OCR and OpenCV support:
 ```bash
 pip install -e ".[all]"
 ```
+
+## Install As A Codex Plugin
+
+Clone this repository, then run:
+
+```bash
+python scripts/install_codex_plugin.py
+```
+
+The installer copies the plugin into your local Codex plugin directory, writes the personal marketplace entry, installs Python dependencies, and tries to run:
+
+```bash
+codex plugin add visual-context-router@personal
+```
+
+After installing, start a new Codex thread and ask:
+
+```text
+Use Visual Context Router to inspect my screen with vcr_capture_route.
+```
+
+See [docs/codex-install.md](docs/codex-install.md) for manual installation and troubleshooting.
 
 ## Quick Start
 

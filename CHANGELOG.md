@@ -6,6 +6,7 @@
 - Screenshot diffing and change detection.
 - Agent routing decision API and `vcr route` command.
 - MCP tools for direct Codex integration, including `vcr_capture_route`.
+- One-command local Codex plugin installer.
 - Wireframe prompt generation.
 - Region-of-interest crop command.
 - Optional OCR and OpenCV integration points.
