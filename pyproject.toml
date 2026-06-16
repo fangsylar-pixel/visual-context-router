@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "visual-context-router"
+version = "0.1.0"
+description = "Token-aware visual context routing for Codex and AI agents."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+  { name = "Visual Context Router contributors" }
+]
+keywords = [
+  "codex",
+  "ai-agent",
+  "vision",
+  "screenshot",
+  "token-optimization",
+  "computer-use"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Libraries :: Python Modules"
+]
+dependencies = [
+  "Pillow>=10.0",
+  "numpy>=1.24"
+]
+
+[project.optional-dependencies]
+ocr = ["pytesseract>=0.3.10"]
+cv = ["opencv-python>=4.8"]
+dev = ["pytest>=8.0", "ruff>=0.5"]
+all = ["pytesseract>=0.3.10", "opencv-python>=4.8", "pytest>=8.0", "ruff>=0.5"]
+
+[project.scripts]
+vcr = "visual_context_router.cli:main"
+visual-context-router = "visual_context_router.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["visual_context_router"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

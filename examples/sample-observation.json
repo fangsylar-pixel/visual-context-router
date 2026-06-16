@@ -1,0 +1,22 @@
+{
+  "changed": true,
+  "change_score": 0.018,
+  "image": {
+    "width": 1440,
+    "height": 900,
+    "path": "examples/sample-screen.png"
+  },
+  "elements": [
+    {
+      "id": 1,
+      "type": "region",
+      "text": "",
+      "bbox": [0.12, 0.18, 0.42, 0.27],
+      "confidence": 0.58
+    }
+  ],
+  "ocr_text": ["Search", "Submit"],
+  "roi_suggestions": [[0.12, 0.18, 0.42, 0.27]],
+  "wireframe": "Screen 1440x900.\nChanged: yes.\nDetected UI regions:\nRegion[1] bbox=(0.120,0.180,0.420,0.270) conf=0.58"
+}
+

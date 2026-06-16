@@ -1,0 +1,23 @@
+{
+  "name": "visual-context-router",
+  "version": "0.1.0",
+  "description": "Token-aware visual context routing for Codex and AI agents.",
+  "author": {
+    "name": "Visual Context Router contributors"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Visual Context Router",
+    "shortDescription": "Compress screenshots into structured visual state.",
+    "longDescription": "Visual Context Router helps Codex and other AI agents reduce visual token usage by combining screenshot diffing, UI element extraction, region-of-interest crops, and compact wireframe prompts.",
+    "developerName": "Visual Context Router contributors",
+    "category": "Productivity",
+    "capabilities": [
+      "screenshot-diff",
+      "roi-cropping",
+      "wireframe-prompts",
+      "agent-observation"
+    ],
+    "defaultPrompt": "Use Visual Context Router to inspect screenshots with low token overhead."
+  }
+}
